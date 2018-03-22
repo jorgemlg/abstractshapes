@@ -215,6 +215,7 @@ end
 r=[];
 c=[];
 
+
 for i=1:p.numLines
     
     [r(i), c(i)] = ind2sub(g.gridSize,g.locLines(loc((i))));
@@ -243,13 +244,13 @@ for i=1:p.numLines
             
             Screen('DrawLine', offWindow, p.lineColor, ...
                 r(i)+1,c(i)+1,r(i)+p.lineLength-1,c(i)+p.lineLength-1, ...
-                p.lineWidth*1.35);
+                p.lineWidthDiagonal);
         
         case 4
             
             Screen('DrawLine', offWindow, p.lineColor, ...
                 r(i)-1,c(i)+1,r(i)-p.lineLength+1,c(i)+p.lineLength-1, ...
-                p.lineWidth*1.35);
+                p.lineWidthDiagonal);
         
         case 5 
              
@@ -265,13 +266,13 @@ for i=1:p.numLines
             
             Screen('DrawLine', offWindow, p.lineColor, ...
                 r(i)-1,c(i)-1,r(i)-p.lineLength+1,c(i)-p.lineLength+1, ...
-                p.lineWidth*1.35);
+                p.lineWidthDiagonal);
         
         case 8
             
             Screen('DrawLine', offWindow, p.lineColor, ...
                 r(i)+1,c(i)-1,r(i)+p.lineLength-1,c(i)-p.lineLength+1, ...
-                p.lineWidth*1.35);
+                p.lineWidthDiagonal);
     end
     
 end

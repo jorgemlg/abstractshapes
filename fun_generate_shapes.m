@@ -6,7 +6,10 @@ function [shapes, p] = fun_generate_shapes(varargin)
 
 % The pixel size used to estimate the size 
 % of the stimuli depends on the monitor's resolution; i.e. the created 
-% images will vary depending on the monitor in which the code is run. 
+% images will vary depending on the monitor in which the code is run. For
+% best results use stimuli larger than 2 degrees of visual angle (final 
+% results may vary depending on the monitor's resolution / hardware 
+% limitations).
 
 % This function requires installing The Psychtoolbox (Brainard 1997), a 
 % free stimulus presentation toolbox for Matlab: http://psychtoolbox.org
@@ -45,6 +48,12 @@ function [shapes, p] = fun_generate_shapes(varargin)
 % a specially created folder /images/day*time created wherever this 
 % function file is stored.
 
+% DISCLAIMER
+% This code has been tested on an iMac Retina 27" and a Macbook Retina 12". 
+% There are issues with visual angle estimation / stimuli creation on the 
+% Macbook and using a laptop is not recommended. The code hasn't been
+% tested in other Operating Systems such as Windows.
+% 
 % COPYRIGHT 
 % This code is freely distributed and may be changed as needed by the user.
 % I just kindly ask that if you use the original or a modified version of
@@ -107,14 +116,15 @@ defaultSquares   = 6;
 
 r = inputParser;
 validIntegerPosNum = @(x) isnumeric(x) && (x > 0) && mod(x(1),1) == 0;
-validColorNum     = @(x) length(x)==3 && mod(x(1),1) == 0 && ...
+validPosNum        = @(x) isnumeric(x) && (x > 0);
+validColorNum      = @(x) length(x)==3 && mod(x(1),1) == 0 && ...
                         mod(x(2),1) == 0 && mod(x(3),1) == 0 && ...
                         (x(1) >= 0) && (x(2) >= 0) && (x(3) >= 0) && ...
                         (x(1) <= 255) && (x(2) <= 255) && (x(3) <= 255);
                
 addOptional(r,'lines', defaultLines, validIntegerPosNum);
 addOptional(r,'number',defaultStim, validIntegerPosNum);
-addOptional(r,'degrees',defaultDegrees, validIntegerPosNum);
+addOptional(r,'degrees',defaultDegrees, validPosNum);
 addOptional(r,'distance',defaultDistance, validIntegerPosNum);
 addOptional(r,'backColor',defaultBackColor, validColorNum);
 addOptional(r,'lineColor',defaultLineColor, validColorNum);
@@ -140,8 +150,7 @@ p = fun_param(window, numLines, backColor, lineColor, degreeStim, ...
 
 if numLines > p.maxLimit    
     
-    disp('++++++++++++++++++++++++++++')
-    disp('++++++++++++++++++++++++++++')
+    
     disp('++++++++++++++++++++++++++++')
     disp('++++++++++++++++++++++++++++')
     disp('   ')
@@ -154,9 +163,7 @@ if numLines > p.maxLimit
     disp('   ')
     disp('   ')
     disp('++++++++++++++++++++++++++++')
-    disp('++++++++++++++++++++++++++++')
-    disp('++++++++++++++++++++++++++++')
-    disp('++++++++++++++++++++++++++++')
+    disp('++++++++++++++++++++++++++++')   
     
     return
 end
@@ -169,7 +176,7 @@ for items = 1:numStim
        
     cd(cwd);
     
-    shapes {items}   = fun_create_grid(p);
+    shapes{items}    = fun_create_grid(p);
     
     fileName         = strcat('s_', num2str(numLines), ...
                                     '_', num2str(items), '.', stimType);

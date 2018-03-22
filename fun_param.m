@@ -97,18 +97,67 @@ p.maxLimit         =  (p.squaresinGrid^2)*2 + ...
 
 % Squares in grid & Line size
 
+p.alertStim        = 0;
 p.squareSize       = round(p.stimWidth_inPixels/...                         % Determines size of each square in the grid in pixels
                             p.squaresinGrid);              
                         
-p.lineWidth        = round(p.squareSize * .1);                              % Determine line width based on grid size. Default is .2 of square size in pixels
-
+p.lineWidth         = round(p.squareSize * .1);                             % Determine line width based on grid size. Default is .2 of square size in pixels
 if mod(p.lineWidth,2) == 0 
     p.lineWidth = p.lineWidth + 1;
 end                                                                         % Linewidth to be an ODD number for proper alignment
 
+
+% Check min and max width lines allowed by hardware
+
+[~, maxSmoothLineWidth]=Screen('DrawLines', window);
+
+if p.lineWidth > maxSmoothLineWidth
+    p.lineWidth  = round(maxSmoothLineWidth);
+    
+    if mod(p.lineWidth,2) == 0 
+        p.lineWidth = p.lineWidth + 1;
+    end    
+
+    p.squareSize       = round(p.lineWidth * 10);
+    
+    p.alertStim = 1;
+end
+
+% Check diagonals
+
+p.lineWidthDiagonal = p.lineWidth * 1.35;                                   % Make diagonal lines a bit thicker to approximate appearance with verticla and horizontal lines
+
+if p.lineWidthDiagonal > maxSmoothLineWidth                                 % In some monitors (e.g. retina laptops) diagonals are not rendered very well and hence cannot be proportionally sized
+    p.lineWidth         = round(p.lineWidth/1.35);                          % Reduce size of line width to keep diagonal width within monitor limits
+    p.lineWidthDiagonal = p.lineWidth * 1.35;  
+    
+    if mod(p.lineWidth,2) == 0 
+        p.lineWidth = p.lineWidth + 1;
+    end   
+        
+    p.squareSize = round(p.lineWidth * 10);
+    
+    p.alertStim = 1;
+end
+
 p.halfLine         = floor(p.lineWidth/2);                                  % Determine half of the width of a line
 p.lineLength       = p.squareSize;                                          % Determine true line length based on square grid size         
 
+if p.alertStim == 1
+    
+    disp("********************************************************************************") 
+    disp("****                                                                        ****")
+    disp("****  YOUR MONITOR DOESN'T ALLOW FOR CORRECT DEGREE OF VISUAL ANGLE         ****")
+    disp("****  ESTIMATION. THE STIMULUS WILL BE CREATED BUT ITS MEASURES WILL BE     ****")
+    disp("****  ARBITRARY. THIS MESSAGE IS LIKELY TO OCCURR IF YOU ARE USING A        ****")
+    disp("****  LAPTOP. FOR CORRECT VISUAL ANGLE ESTIMATION USE A DESKTOP MONITOR     ****")
+    disp("****  OR TRY REDUCING THE VISUAL ANGLE.                                     ****")
+    disp("********************************************************************************")
+    disp(" ")
+    disp(" ")
 
+    input('PRESS ENTER TO ACKNOWLEDGE THIS MESSAGE');
+
+end
 
 end
